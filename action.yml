@@ -1,0 +1,33 @@
+name: Slack Notify
+description: Send messages to Slack from GitHub Actions.
+branding:
+  icon: message-square
+  color: purple
+runs:
+  using: node12
+  main: index.dist.js
+inputs:
+  channel-id:
+    description: The Slack channel ID - check the README for where to find this.
+    required: true
+  bot-token:
+    description: A Slack bot token to send messages with - required if `webhook-url` was not provided.
+    required: false
+  webhook-url:
+    description: A Slack webhook URL to send messages to - required if `bot-token` was not provided.
+    required: false
+  state:
+    description: The build state to send to Slack - required if `text` was not provided.
+    required: false
+  text:
+    description: Override the text that's sent to Slack - required if `state` was not provided.
+    required: false
+  color:
+    description: The colour of the Slack attachment.
+    required: false
+  message-id:
+    description: The ID of the existing Slack message to update - only works if `bot-token` was provided.
+    required: false
+outputs:
+  message-id:
+    description: The unique identifier of the Slack message sent.

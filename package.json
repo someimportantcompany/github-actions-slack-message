@@ -1,0 +1,44 @@
+{
+  "name": "@someimportantcompany/github-actions-slack-notify",
+  "version": "1.0.0",
+  "description": "Send messages to Slack from GitHub Actions.",
+  "main": "index.dist.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "lint": "eslint .",
+    "test": "nyc --reporter=lcov --reporter=text mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/someimportantcompany/github-actions-slack-notify.git"
+  },
+  "author": "James D <james@jdrydn.com> (https://jdrydn.com)",
+  "license": "MIT",
+  "keywords": [
+    "github",
+    "actions",
+    "slack",
+    "notify"
+  ],
+  "dependencies": {
+    "@actions/core": "^1.2.5",
+    "@actions/github": "^4.0.0",
+    "axios": "^0.20.0",
+    "http-assert": "^1.4.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-mocha": "^8.0.0",
+    "eslint-plugin-sort-requires": "^2.1.0",
+    "mocha": "^8.1.2",
+    "nock": "^13.0.4",
+    "nyc": "^15.1.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  },
+  "engines": {
+    "node": ">=10",
+    "npm": ">=6"
+  }
+}
