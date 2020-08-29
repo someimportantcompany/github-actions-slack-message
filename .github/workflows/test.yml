@@ -13,7 +13,7 @@ jobs:
 
       - name: someimportantcompany/github-actions-slack-notify@master
         uses: ./
-        id: slack
+        id: slack1
         with:
           channel: ${{ env.SLACK_CHANNEL }}
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -41,9 +41,17 @@ jobs:
         with:
           channel: ${{ env.SLACK_CHANNEL }}
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          id: slack
+          text: Deployment started
+          color: grey
+
+      - run: sleep 5
+
+      - name: someimportantcompany/github-actions-slack-notify@master
+        uses: ./
+        with:
+          channel: ${{ env.SLACK_CHANNEL }}
+          bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          text: Deployment finished
           color: good
-          text: All looks good to me!
-          message-id: ${{ steps.slack.outputs.message-id }}
-        env:
-          SHOW_DEBUG: true
-          THROW_ERR: true
+          message-id: ${{ steps.slack.output.message-id }}
