@@ -22,7 +22,7 @@ This action sends message to Slack during your GitHub Actions workflow. It takes
     text: Firing a webhook message
 ```
 
-![Slack message](./Screenshot%202020-08-29%20at%2019.10.52.png)
+![Individual messages](./Screenshot%202020-08-29%20at%2019.10.52.png)
 
 ### Updating an existing message
 
@@ -46,6 +46,8 @@ If you are planning to send multiple Slack messages per invocation, and you'd pr
     color: good
     message-id: ${{ steps.slack.outputs.message-id }}
 ```
+
+![Updating message](./Screenshot%202020-08-29%20at%2020.07.02.gif)
 
 ### Additional colors
 
