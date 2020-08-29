@@ -17,6 +17,7 @@ jobs:
         with:
           channel-id: TEST-CHANNEL
           webhook-url: https://httpbin.org/post
-          message: Hello, world!
+          text: Hello, world!
         env:
+          SHOW_DEBUG: true
           THROW_ERR: true
