@@ -2099,7 +2099,7 @@ const util = __webpack_require__(6);
 /* istanbul ignore next */ // eslint-disable-next-line no-console
 const debug = process.env.SHOW_DEBUG ? console.log : () => null;
 
-function buildContextBlock({ payload, ref, workflow, actor, eventName, sha, repo: { owner, repo } }) {
+function buildContextBlock({ eventName, payload, workflow, actor, repo: { owner, repo }, ref, sha }) {
   assert(owner && repo, new Error('Missing owner/repo from context'));
   assert(ref, new Error('Missing git ref from context'));
   assert(sha, new Error('Missing git sha from context'));
@@ -2132,6 +2132,16 @@ function buildContextBlock({ payload, ref, workflow, actor, eventName, sha, repo
   });
 
   return { type: 'context', elements };
+}
+
+function buildFallbackPrefix({ eventName, payload, repo: { owner, repo }, ref }) {
+  assert(owner && repo, new Error('Missing owner/repo from context'));
+  assert(ref, new Error('Missing git ref from context'));
+
+  assert(eventName !== 'pull_request' || (payload && payload.pull_request), new Error('Missing pull request payload'));
+  const branch = eventName === 'pull_request' ? payload.pull_request.head.ref : ref.replace(/^refs\/heads\//, '');
+
+  return util.format('%s/%s (%s)', owner, repo, branch);
 }
 
 async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {} } = {}, body = null) {
@@ -2188,14 +2198,26 @@ module.exports = async function slackNotify() {
     assert(!botToken || channel, new Error('Expected `channel` since `bot-token` input was passed'));
     assert(!existingMessageID || botToken, new Error('Expected `bot-token` since `message-id` input was passed'));
 
-    const blocks = [
-      { type: 'section', text: { type: 'mrkdwn', verbatim: false, text } },
-      buildContextBlock(github.context),
-    ];
-
     const args = {
       ...(botToken ? { channel } : {}),
-      ...(color ? { attachments: [ { color, blocks } ] } : { blocks }),
+      ...(color ? {
+        attachments: [
+          {
+            color,
+            fallback: `${buildFallbackPrefix(github.context)} ${text}`,
+            blocks: [
+              { type: 'section', text: { type: 'mrkdwn', verbatim: false, text } },
+              buildContextBlock(github.context),
+            ],
+          }
+        ]
+      } : {
+        text: `${buildFallbackPrefix(github.context)} ${text}`,
+        blocks: [
+          { type: 'section', text: { type: 'mrkdwn', verbatim: false, text } },
+          buildContextBlock(github.context),
+        ],
+      }),
       ...(existingMessageID ? { ts: existingMessageID } : {}),
     };
 
@@ -2218,7 +2240,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"60b16d51"}`;
+`${"e043a0e8"}`;
 
 if (!module.parent) {
   module.exports();
