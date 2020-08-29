@@ -2112,18 +2112,24 @@ function buildContextBlock({ payload, ref, workflow, actor, eventName, sha, repo
   const elements = [];
 
   if (actor && workflow) {
-    elements.push(util.format('*%s* by *<%s|%s>* from *<%s|%s>*', ...[
-      eventName ? _startCase(eventName) : 'Trigger',
-      `https://github.com/${actor}`, actor,
-      `https://github.com/${owner}/${repo}/commit/${sha}/checks`, workflow,
-    ]));
+    elements.push({
+      type: 'mrkdwn',
+      text: util.format('*%s* by *<%s|%s>* from *<%s|%s>*', ...[
+        eventName ? _startCase(eventName) : 'Trigger',
+        `https://github.com/${actor}`, actor,
+        `https://github.com/${owner}/${repo}/commit/${sha}/checks`, workflow,
+      ]),
+    });
   }
 
-  elements.push(util.format('*<%s|%s>* (<%s|%s>) (<%s|#%s>)', ...[
-    `https://github.com/${owner}/${repo}`, `${owner}/${repo}`,
-    `https://github.com/${owner}/${repo}/tree/${branch}`, `${branch}`,
-    `https://github.com/${owner}/${repo}/commit/${sha}`, `${sha.substr(0, 7)}`,
-  ]));
+  elements.push({
+    type: 'mrkdwn',
+    text: util.format('*<%s|%s>* (<%s|%s>) (<%s|#%s>)', ...[
+      `https://github.com/${owner}/${repo}`, `${owner}/${repo}`,
+      `https://github.com/${owner}/${repo}/tree/${branch}`, `${branch}`,
+      `https://github.com/${owner}/${repo}/commit/${sha}`, `${sha.substr(0, 7)}`,
+    ]),
+  });
 
   return { type: 'context', elements };
 }
@@ -2205,7 +2211,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"17413cbc"}`;
+`${"215d091e"}`;
 
 if (!module.parent) {
   module.exports();
