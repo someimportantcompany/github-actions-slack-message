@@ -10,7 +10,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const util = require('util');
 
-/* istanbul ignore next */
+/* istanbul ignore next */ // eslint-disable-next-line no-console
 const debug = process.env.SHOW_DEBUG ? console.log : () => null;
 
 function buildContextBlock({ payload, ref, workflow, actor, eventName, sha, repo: { owner, repo } }) {
@@ -59,6 +59,8 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
     throw new Error('Missing botToken/webhookUrl');
   }
 
+  debug('%s %s %j', url, headers, body);
+
   try {
     const { status, data } = await axios.post(url, body, { headers });
     assert(data && data.ok === true, status, new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
@@ -83,6 +85,8 @@ module.exports = async function slackNotify() {
     const color = core.getInput('color');
     const existingMessageID = core.getInput('message-id');
 
+    debug('%s', { channelID, botToken, webhookUrl, text, color, existingMessageID });
+
     assert(channelID, new Error('Expected `channel-id` input'));
     assert(text, new Error('Expected `text` input'));
     assert(botToken || webhookUrl, new Error('Expected `bot-token` or `webhook-url` input'));
@@ -100,9 +104,13 @@ module.exports = async function slackNotify() {
     };
 
     const { ts: sentMessageID } = await sendToSlack({ botToken, webhookUrl }, github.context, args);
+    debug('%s', { sentMessageID });
     core.setOutput('message-id', sentMessageID);
   } catch (err) /* istanbul ignore next */ {
     core.setFailed(err.message);
+
+    /* istanbul ignore next */ // eslint-disable-next-line no-console,no-unused-expressions
+    process.env.SHOW_DEBUG ? console.error(err) : () => null;
 
     if (process.env.THROW_ERR) {
       throw err;
