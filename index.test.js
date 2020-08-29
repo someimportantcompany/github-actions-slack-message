@@ -178,7 +178,6 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         webhookUrl: 'some-important-webhook-url',
       });
       assert.deepStrictEqual(args, {
-        channel: 'some-important-channel-id',
         blocks: [
           { type: 'section', text: { type: 'mrkdwn', verbatim: false, text: 'Some important message' } },
           buildContextBlock(),
@@ -191,7 +190,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
 
     await action.__with__({ core, buildContextBlock, sendToSlack })(() => action());
 
-    assert.strictEqual(core.getOutput('message-id'), 'some-message-id');
+    assert.strictEqual(core.getOutput('message-id'), null);
   });
 
   it('should an update message', async () => {
