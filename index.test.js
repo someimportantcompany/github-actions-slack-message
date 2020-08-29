@@ -14,6 +14,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
   });
 
   before(() => {
+    process.env.SHOW_DEBUG = false;
     process.env.THROW_ERR = true;
   });
 
@@ -144,6 +145,16 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       await sendToSlack({ webhookUrl: 'https://some-important-webhook' }, { repo: { owner: 'a', repo: 'b' } }, { text: 'c' });
 
       scope.done();
+    });
+
+    it('should throw an error if no botToken/webhookUrl is present', async () => {
+      try {
+        await sendToSlack({}, { repo: { owner: 'a', repo: 'b' } }, {});
+        assert.fail('Should have failed');
+      } catch (err) {
+        assert.ok(err instanceof Error);
+        assert.strictEqual(err.message, 'Missing botToken/webhookUrl');
+      }
     });
   });
 

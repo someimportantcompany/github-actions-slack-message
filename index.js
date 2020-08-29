@@ -10,6 +10,9 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const util = require('util');
 
+/* istanbul ignore next */
+const debug = process.env.SHOW_DEBUG ? console.log : () => null;
+
 function buildContextBlock({ payload, ref, workflow, actor, eventName, sha, repo: { owner, repo } }) {
   assert(owner && repo, new Error('Missing owner/repo from context'));
   assert(ref, new Error('Missing git ref from context'));
@@ -39,7 +42,9 @@ function buildContextBlock({ payload, ref, workflow, actor, eventName, sha, repo
   return { type: 'context', elements };
 }
 
-async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } }, args) {
+async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {} } = {}, body = null) {
+  assert(owner && repo, new Error('Missing owner/repo from context'));
+
   let url = 'https://api.slack.com';
   const headers = {
     'user-agent': `${owner}/${repo} (via @someimportantcompany/github-actions-slack-notify)`,
@@ -48,15 +53,18 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } }, 
   if (webhookUrl) {
     url = webhookUrl;
   } else if (typeof botToken === 'string') {
-    url = `https://slack.com/api/chat.${args.ts ? 'update' : 'postMessage'}`;
+    url = `https://slack.com/api/chat.${body && body.ts ? 'update' : 'postMessage'}`;
     headers.authorization = botToken.startsWith('Bearer ') ? botToken : `Bearer ${botToken}`;
+  } else {
+    throw new Error('Missing botToken/webhookUrl');
   }
 
   try {
-    const { status, data } = await axios.post(url, args, { headers });
+    const { status, data } = await axios.post(url, body, { headers });
     assert(data && data.ok === true, status, new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
     return data;
   } catch (err) {
+    /* istanbul ignore else */
     if (err.response && err.response.data && err.response.data.error) {
       const { status, data: { error: code } } = err.response;
       assert(false, status, new Error(`Error from Slack: ${code}`));
