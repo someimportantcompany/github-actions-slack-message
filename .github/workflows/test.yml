@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: someimportantcompany/github-actions-slack-notify@latest
+      - name: someimportantcompany/github-actions-slack-notify@master
         uses: ./
         id: slack
         with:
@@ -23,7 +23,9 @@ jobs:
           SHOW_DEBUG: true
           THROW_ERR: true
 
-      - name: someimportantcompany/github-actions-slack-notify@latest
+      - run: sleep 3s
+
+      - name: someimportantcompany/github-actions-slack-notify@master
         uses: ./
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -32,7 +34,9 @@ jobs:
           SHOW_DEBUG: true
           THROW_ERR: true
 
-      - name: someimportantcompany/github-actions-slack-notify@latest
+      - run: sleep 3s
+
+      - name: someimportantcompany/github-actions-slack-notify@master
         uses: ./
         with:
           channel: ${{ env.SLACK_CHANNEL }}
