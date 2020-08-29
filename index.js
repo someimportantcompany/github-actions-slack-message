@@ -118,12 +118,9 @@ module.exports = async function slackNotify() {
   }
 };
 
-if (!module.parent) {
-  (async () => module.exports())();
-}
+// eslint-disable-next-line no-unused-expressions
+`${process.env.VARIANCE}`;
 
-/**
- * Generate some random bytes to create variance between builds
- * $ node -pe "require('crypto').randomBytes(4).toString('hex')"
- * 51f58211
- */
+if (!module.parent) {
+  module.exports();
+}
