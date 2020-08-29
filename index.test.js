@@ -95,6 +95,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
 
   describe('sendToSlack', () => {
     const sendToSlack = action.__get__('sendToSlack');
+    const context = { repo: { owner: 'a', repo: 'b' } };
 
     afterEach(() => nock.cleanAll());
 
@@ -108,7 +109,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         .post('/api/chat.postMessage', { text: 'c' })
         .reply(200, { ok: true });
 
-      await sendToSlack({ botToken: 'some-important-bot-token' }, { repo: { owner: 'a', repo: 'b' } }, { text: 'c' });
+      await sendToSlack({ botToken: 'some-important-bot-token' }, context, { text: 'c' });
 
       scope.done();
     });
@@ -124,7 +125,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         .reply(400, { ok: false, error: 'not-the-droids-you-are-looking-for' });
 
       try {
-        await sendToSlack({ botToken: 'Bearer some-important-bot-token' }, { repo: { owner: 'a', repo: 'b' } }, { text: 'c' });
+        await sendToSlack({ botToken: 'Bearer some-important-bot-token' }, context, { text: 'c' });
       } catch (err) {
         assert.ok(err instanceof Error);
         assert.strictEqual(err.message, 'Error from Slack: not-the-droids-you-are-looking-for');
@@ -142,14 +143,14 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         .post('/', { text: 'c' })
         .reply(200, { ok: true });
 
-      await sendToSlack({ webhookUrl: 'https://some-important-webhook' }, { repo: { owner: 'a', repo: 'b' } }, { text: 'c' });
+      await sendToSlack({ webhookUrl: 'https://some-important-webhook' }, context, { text: 'c' });
 
       scope.done();
     });
 
     it('should throw an error if no botToken/webhookUrl is present', async () => {
       try {
-        await sendToSlack({}, { repo: { owner: 'a', repo: 'b' } }, {});
+        await sendToSlack({}, context, {});
         assert.fail('Should have failed');
       } catch (err) {
         assert.ok(err instanceof Error);
@@ -161,7 +162,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
   it('should send a message to Slack', async () => {
     const core = mockCore({
       inputs: {
-        'channel-id': 'some-important-channel-id',
+        'channel': 'some-important-channel-id',
         'webhook-url': 'some-important-webhook-url',
         'text': 'Some important message',
         // 'color': '',
@@ -196,7 +197,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
   it('should an update message', async () => {
     const core = mockCore({
       inputs: {
-        'channel-id': 'some-important-channel-id',
+        'channel': 'some-important-channel-id',
         'bot-token': 'some-important-bot-token',
         'text': 'Some important message',
         'color': 'good',

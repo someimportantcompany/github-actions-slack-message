@@ -7,7 +7,7 @@ jobs:
   run:
     runs-on: ubuntu-latest
     env:
-      SLACK_CHANNEL_ID: G019R925BQA
+      SLACK_CHANNEL: github-actions-slack-notify
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -18,7 +18,7 @@ jobs:
         uses: ./
         id: slack
         with:
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          channel: ${{ env.SLACK_CHANNEL }}
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           color: '#B6B6B6'
           text: Firing a bot-token message
@@ -29,7 +29,7 @@ jobs:
       - name: someimportantcompany/github-actions-slack-notify@latest
         uses: ./
         with:
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          channel: ${{ env.SLACK_CHANNEL }}
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           text: Firing a webhook message
         env:
@@ -39,7 +39,7 @@ jobs:
       - name: someimportantcompany/github-actions-slack-notify@latest
         uses: ./
         with:
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
+          channel: ${{ env.SLACK_CHANNEL }}
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           color: good
           text: All looks good to me!

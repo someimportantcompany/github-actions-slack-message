@@ -7,8 +7,8 @@ runs:
   using: node12
   main: ./index.dist.js
 inputs:
-  channel-id:
-    description: The Slack channel ID - check the README for where to find this.
+  channel:
+    description: The Slack channel - check the README for where to find this.
     required: true
   text:
     description: Text to send to Slack - in Slack's "mrkdwn" format.
