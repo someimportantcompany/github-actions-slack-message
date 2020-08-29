@@ -2255,7 +2255,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"f6e6b179"}`;
+`${"8d35582b"}`;
 
 if (!module.parent) {
   module.exports();
