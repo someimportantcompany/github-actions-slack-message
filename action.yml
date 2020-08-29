@@ -1,4 +1,4 @@
-name: Slack Notify
+name: Slack Message
 description: Send messages to Slack from GitHub Actions.
 branding:
   icon: message-square
