@@ -118,6 +118,10 @@ module.exports = async function slackNotify() {
   }
 };
 
+if (!module.parent) {
+  (async () => module.exports())();
+}
+
 /**
  * Generate some random bytes to create variance between builds
  * $ node -pe "require('crypto').randomBytes(4).toString('hex')"
