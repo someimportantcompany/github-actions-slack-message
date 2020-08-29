@@ -2138,7 +2138,7 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
   assert(owner && repo, new Error('Missing owner/repo from context'));
 
   let url = 'https://api.slack.com';
-  const headers = {
+  const reqHeaders = {
     'user-agent': `${owner}/${repo} (via @someimportantcompany/github-actions-slack-notify)`,
   };
 
@@ -2146,17 +2146,18 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
     url = webhookUrl;
   } else if (typeof botToken === 'string') {
     url = `https://slack.com/api/chat.${body && body.ts ? 'update' : 'postMessage'}`;
-    headers.authorization = botToken.startsWith('Bearer ') ? botToken : `Bearer ${botToken}`;
+    reqHeaders.authorization = botToken.startsWith('Bearer ') ? botToken : `Bearer ${botToken}`;
   } else {
     throw new Error('Missing botToken/webhookUrl');
   }
 
-  debug('%s %s %j', url, headers, body);
+  debug('%s %s %j', url, reqHeaders, body);
 
   try {
-    const { status, data } = await axios.post(url, body, { headers });
-    debug({ status, data });
-    assert(data && data.ok === true, new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
+    const { status, headers, data } = await axios.post(url, body, { headers: reqHeaders });
+    debug({ status, headers, data });
+    assert(botToken && data && data.ok === true, new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
+    assert(webhookUrl && data === 'ok', new Error(`Error from Slack: Response not OK`));
     return data;
   } catch (err) {
     /* istanbul ignore else */
@@ -2216,7 +2217,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"a2178aeb"}`;
+`${"35724977"}`;
 
 if (!module.parent) {
   module.exports();
