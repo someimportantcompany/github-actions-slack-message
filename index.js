@@ -1,3 +1,8 @@
+/**
+ * @author: James D <james@someimportantcompany.com> (https://github.com/someimportantcompany)
+ * @license: MIT
+ * @link: https://github.com/someimportantcompany/github-actions-slack-notify
+ */
 const _startCase = require('lodash/startCase');
 const assert = require('http-assert');
 const axios = require('axios');

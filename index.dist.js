@@ -2084,6 +2084,11 @@ function onceStrict (fn) {
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/**
+ * @author: James D <james@someimportantcompany.com> (https://github.com/someimportantcompany)
+ * @license: MIT
+ * @link: https://github.com/someimportantcompany/github-actions-slack-notify
+ */
 const _startCase = __webpack_require__(32);
 const assert = __webpack_require__(59);
 const axios = __webpack_require__(73);
