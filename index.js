@@ -58,7 +58,8 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
 
   if (webhookUrl) {
     url = webhookUrl;
-  } else if (typeof botToken === 'string') {
+  } else if (botToken) {
+    assert(typeof botToken === 'string', new TypeError('Expected `botToken` to be a string'));
     url = `https://slack.com/api/chat.${body && body.ts ? 'update' : 'postMessage'}`;
     reqHeaders.authorization = botToken.startsWith('Bearer ') ? botToken : `Bearer ${botToken}`;
   } else {
@@ -70,8 +71,8 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
   try {
     const { status, headers, data } = await axios.post(url, body, { headers: reqHeaders });
     debug({ status, headers, data });
-    assert(botToken && data && data.ok === true, new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
-    assert(webhookUrl && data === 'ok', new Error(`Error from Slack: Response not OK`));
+    assert(!botToken || (data && data.ok === true), new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
+    assert(!webhookUrl || data === 'ok', new Error(`Error from Slack: Response not OK`));
     return data;
   } catch (err) {
     /* istanbul ignore else */
