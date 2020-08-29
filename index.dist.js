@@ -2105,8 +2105,8 @@ const COLORS = {
   'failed': 'danger',
   'info': '#17a2b8',
 
-  'gray': '#B6B6B6',
-  'grey': '#B6B6B6',
+  'gray': '#DDDDDD',
+  'grey': '#DDDDDD',
   'orange': '#FF4500',
   'purple': '#9400D3',
 };
@@ -2181,7 +2181,7 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
 
   try {
     const { status, data } = await axios.post(url, body, { headers });
-    debug('%s %j', { status, data });
+    debug('%s %j', status, data);
     assert(!botToken || (data && data.ok === true), new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
     assert(!webhookUrl || data === 'ok', new Error('Error from Slack: Response not OK'));
     return data;
@@ -2255,7 +2255,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"78b3a3dc"}`;
+`${"d223626c"}`;
 
 if (!module.parent) {
   module.exports();
