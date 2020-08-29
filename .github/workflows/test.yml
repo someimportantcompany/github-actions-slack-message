@@ -2,7 +2,7 @@ name: Test
 on:
   push:
     paths:
-      - ./index.dist.js
+      - index.dist.js
 jobs:
   run:
     runs-on: ubuntu-latest
