@@ -1,0 +1,22 @@
+name: Test
+on:
+  push:
+    paths:
+      - ./index.dist.js
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: someimportantcompany/github-actions-slack-notify@latest
+        uses: ./
+        with:
+          channel-id: TEST-CHANNEL
+          webhook-url: https://httpbin.org/post
+          message: Hello, world!
+        env:
+          THROW_ERR: true

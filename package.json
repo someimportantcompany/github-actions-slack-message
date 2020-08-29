@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "lint": "eslint .",
-    "test": "nyc --reporter=lcov --reporter=text mocha"
+    "test": "nyc --reporter=lcov --reporter=text mocha *.test.js"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,8 @@
     "@actions/core": "^1.2.5",
     "@actions/github": "^4.0.0",
     "axios": "^0.20.0",
-    "http-assert": "^1.4.1"
+    "http-assert": "^1.4.1",
+    "lodash": "^4.17.20"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
@@ -34,6 +35,7 @@
     "mocha": "^8.1.2",
     "nock": "^13.0.4",
     "nyc": "^15.1.0",
+    "rewire": "^5.0.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   },

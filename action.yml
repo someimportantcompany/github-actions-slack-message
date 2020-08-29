@@ -5,22 +5,19 @@ branding:
   color: purple
 runs:
   using: node12
-  main: index.dist.js
+  main: ./index.dist.js
 inputs:
   channel-id:
     description: The Slack channel ID - check the README for where to find this.
+    required: true
+  text:
+    description: Text to send to Slack - in Slack's "mrkdwn" format.
     required: true
   bot-token:
     description: A Slack bot token to send messages with - required if `webhook-url` was not provided.
     required: false
   webhook-url:
     description: A Slack webhook URL to send messages to - required if `bot-token` was not provided.
-    required: false
-  state:
-    description: The build state to send to Slack - required if `text` was not provided.
-    required: false
-  text:
-    description: Override the text that's sent to Slack - required if `state` was not provided.
     required: false
   color:
     description: The colour of the Slack attachment.
