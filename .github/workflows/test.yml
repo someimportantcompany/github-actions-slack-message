@@ -45,5 +45,5 @@ jobs:
           channel: ${{ env.SLACK_CHANNEL }}
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           text: Deployment finished
-          color: good
+          color: '#28a745'
           message-id: ${{ steps.slack.outputs.message-id }}

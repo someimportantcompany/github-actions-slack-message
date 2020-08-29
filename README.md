@@ -61,24 +61,16 @@ Alongside the Slack default colors `good`, `warning` & `danger`, this action sup
 | `orange` | ![#FF4500](https://via.placeholder.com/25/FF4500/000000?text=+) |
 | `purple` | ![#9400D3](https://via.placeholder.com/25/9400D3/000000?text=+) |
 
-Additionally, you can pass **hex codes without the preceding `#`** - it's the comment character in YAML & it's an inconvenience here!
-
 ```yml
 - uses: someimportantcompany/github-actions-slack-notify@v1
   with:
     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
     text: Build finished
-    color: good # Slack default color
+    color: good # Slack already-supported color
 
 - uses: someimportantcompany/github-actions-slack-notify@v1
   with:
     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
     text: Build failed
     color: failed # Aliased color
-
-- uses: someimportantcompany/github-actions-slack-notify@v1
-  with:
-    webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-    text: Triggering deployment
-    color: 48D1CC # Cyan
 ```
