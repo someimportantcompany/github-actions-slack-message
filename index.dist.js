@@ -2156,11 +2156,13 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
   try {
     const { status, data } = await axios.post(url, body, { headers });
     assert(data && data.ok === true, status, new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
+    debug(data);
     return data;
   } catch (err) {
     /* istanbul ignore else */
     if (err.response && err.response.data && err.response.data.error) {
-      const { data: { error: code } } = err.response;
+      const { data: { error: code, response_metadata } } = err.response;
+      debug({ error: code, response_metadata });
       assert(false, new Error(`Error from Slack: ${code}`));
     } else {
       throw err;
@@ -2211,7 +2213,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"215d091e"}`;
+`${"44247d44"}`;
 
 if (!module.parent) {
   module.exports();
