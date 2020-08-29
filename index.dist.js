@@ -2164,16 +2164,16 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
 
 module.exports = async function slackNotify() {
   try {
-    const channelID = core.getInput('channel-id');
+    const channel = core.getInput('channel');
     const botToken = core.getInput('bot-token');
     const webhookUrl = core.getInput('webhook-url');
     const text = core.getInput('text');
     const color = core.getInput('color');
     const existingMessageID = core.getInput('message-id');
 
-    debug('%s', { channelID, botToken, webhookUrl, text, color, existingMessageID });
+    debug('%s', { channel, botToken, webhookUrl, text, color, existingMessageID });
 
-    assert(channelID, new Error('Expected `channel-id` input'));
+    assert(channel, new Error('Expected `channel` input'));
     assert(text, new Error('Expected `text` input'));
     assert(botToken || webhookUrl, new Error('Expected `bot-token` or `webhook-url` input'));
     assert(!existingMessageID || botToken, new Error('Expected `bot-token` since `message-id` input was passed'));
@@ -2184,7 +2184,7 @@ module.exports = async function slackNotify() {
     ];
 
     const args = {
-      channel: channelID,
+      channel,
       ...(color ? { attachments: [ { color, blocks } ] } : { blocks }),
       ...(existingMessageID ? { ts: existingMessageID } : {}),
     };
@@ -2205,7 +2205,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"aaee8901"}`;
+`${"d528cfc1"}`;
 
 if (!module.parent) {
   module.exports();
