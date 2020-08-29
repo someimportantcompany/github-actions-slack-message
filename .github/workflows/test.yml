@@ -15,14 +15,10 @@ jobs:
 
       - name: someimportantcompany/github-actions-slack-notify@master
         uses: ./
-        id: slack1
         with:
           channel: ${{ env.SLACK_CHANNEL }}
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          color: '#B6B6B6'
           text: Firing a bot-token message
-
-      - run: sleep 3s
 
       - name: someimportantcompany/github-actions-slack-notify@master
         uses: ./
