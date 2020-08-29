@@ -141,7 +141,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
           },
         })
         .post('/', { text: 'c' })
-        .reply(200, { ok: true });
+        .reply(200, 'ok');
 
       await sendToSlack({ webhookUrl: 'https://some-important-webhook' }, context, { text: 'c' });
 
