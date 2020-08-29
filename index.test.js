@@ -126,7 +126,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         await sendToSlack({ botToken: 'Bearer some-important-bot-token' }, { repo: { owner: 'a', repo: 'b' } }, { text: 'c' });
       } catch (err) {
         assert.ok(err instanceof Error);
-        assert.strictEqual(err.message, 'Error from Slack: not-the-droids-you-are-looking-for')
+        assert.strictEqual(err.message, 'Error from Slack: not-the-droids-you-are-looking-for');
       }
 
       scope.done();
