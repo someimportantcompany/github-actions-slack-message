@@ -19,8 +19,8 @@ const COLORS = {
   'failed': 'danger',
   'info': '#17a2b8',
 
-  'gray': '#B6B6B6',
-  'grey': '#B6B6B6',
+  'gray': '#DDDDDD',
+  'grey': '#DDDDDD',
   'orange': '#FF4500',
   'purple': '#9400D3',
 };
