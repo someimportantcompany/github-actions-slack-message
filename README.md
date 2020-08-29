@@ -1,6 +1,6 @@
-# @someimportantcompany/github-actions-slack-notify
+# Slack Message
 
-[![CICD](https://github.com/someimportantcompany/github-actions-slack-notify/workflows/CICD/badge.svg?branch=master&event=push)](https://github.com/someimportantcompany/github-actions-slack-notify/actions?query=workflow%3ACICD)
+[![CICD](https://github.com/someimportantcompany/github-actions-slack-message/workflows/CICD/badge.svg?branch=master&event=push)](https://github.com/someimportantcompany/github-actions-slack-message/actions?query=workflow%3ACICD)
 
 Send messages to Slack from GitHub Actions.
 
@@ -9,14 +9,14 @@ This action sends message to Slack during your GitHub Actions workflow. It takes
 ## Usage
 
 ```yml
-- uses: someimportantcompany/github-actions-slack-notify@v1
+- uses: someimportantcompany/github-actions-slack-message@v1
   with:
     channel: ${{ env.SLACK_CHANNEL }}
     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
     text: All looks good to me!
     color: '#B6B6B6'
 
-- uses: someimportantcompany/github-actions-slack-notify@v1
+- uses: someimportantcompany/github-actions-slack-message@v1
   with:
     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
     text: Firing a webhook message
@@ -32,7 +32,7 @@ This action sends message to Slack during your GitHub Actions workflow. It takes
 If you are planning to send multiple Slack messages per invocation, and you'd prefer to update a single message instead of posting multiple messages, you can pass the first Slack message's `message-id` to future calls, thus updating in place. **A `bot-token` is required to update messages.**
 
 ```yml
-- uses: someimportantcompany/github-actions-slack-notify@v1
+- uses: someimportantcompany/github-actions-slack-message@v1
   id: slack
   with:
     channel: ${{ env.SLACK_CHANNEL }}
@@ -41,7 +41,7 @@ If you are planning to send multiple Slack messages per invocation, and you'd pr
 
 - run: npm run deploy
 
-- uses: someimportantcompany/github-actions-slack-notify@v1
+- uses: someimportantcompany/github-actions-slack-message@v1
   with:
     channel: ${{ env.SLACK_CHANNEL }}
     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -67,13 +67,13 @@ Alongside the Slack default colors `good`, `warning` & `danger`, this action sup
 | `purple` | ![#9400D3](https://via.placeholder.com/25/9400D3/000000?text=+) |
 
 ```yml
-- uses: someimportantcompany/github-actions-slack-notify@v1
+- uses: someimportantcompany/github-actions-slack-message@v1
   with:
     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
     text: Build finished
     color: good # Slack already-supported color
 
-- uses: someimportantcompany/github-actions-slack-notify@v1
+- uses: someimportantcompany/github-actions-slack-message@v1
   with:
     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
     text: Build failed

@@ -13,14 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: someimportantcompany/github-actions-slack-notify@master
+      - name: someimportantcompany/github-actions-slack-message@master
         uses: ./
         with:
           channel: ${{ env.SLACK_CHANNEL }}
           bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           text: Firing a bot-token message
 
-      - name: someimportantcompany/github-actions-slack-notify@master
+      - name: someimportantcompany/github-actions-slack-message@master
         uses: ./
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -28,7 +28,7 @@ jobs:
 
       - run: sleep 3s
 
-      - name: someimportantcompany/github-actions-slack-notify@master
+      - name: someimportantcompany/github-actions-slack-message@master
         uses: ./
         id: slack
         with:
@@ -39,7 +39,7 @@ jobs:
 
       - run: sleep 5s
 
-      - name: someimportantcompany/github-actions-slack-notify@master
+      - name: someimportantcompany/github-actions-slack-message@master
         uses: ./
         with:
           channel: ${{ env.SLACK_CHANNEL }}

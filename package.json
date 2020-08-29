@@ -1,5 +1,5 @@
 {
-  "name": "@someimportantcompany/github-actions-slack-notify",
+  "name": "@someimportantcompany/github-actions-slack-message",
   "version": "1.0.0",
   "description": "Send messages to Slack from GitHub Actions.",
   "main": "index.dist.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/someimportantcompany/github-actions-slack-notify.git"
+    "url": "git+https://github.com/someimportantcompany/github-actions-slack-message.git"
   },
   "author": "James D <james@jdrydn.com> (https://jdrydn.com)",
   "license": "MIT",
@@ -18,7 +18,7 @@
     "github",
     "actions",
     "slack",
-    "notify"
+    "message"
   ],
   "dependencies": {
     "@actions/core": "^1.2.5",
