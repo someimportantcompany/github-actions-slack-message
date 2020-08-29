@@ -44,7 +44,7 @@ If you are planning to send multiple Slack messages per invocation, and you'd pr
     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
     text: Deployment finished
     color: good
-    message-id: ${{ steps.slack.output.message-id }}
+    message-id: ${{ steps.slack.outputs.message-id }}
 ```
 
 ### Additional colors
