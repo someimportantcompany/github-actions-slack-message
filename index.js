@@ -68,8 +68,8 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
   } catch (err) {
     /* istanbul ignore else */
     if (err.response && err.response.data && err.response.data.error) {
-      const { status, data: { error: code } } = err.response;
-      assert(false, status, new Error(`Error from Slack: ${code}`));
+      const { data: { error: code } } = err.response;
+      assert(false, new Error(`Error from Slack: ${code}`));
     } else {
       throw err;
     }
