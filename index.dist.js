@@ -2154,8 +2154,8 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
   } catch (err) {
     /* istanbul ignore else */
     if (err.response && err.response.data && err.response.data.error) {
-      const { status, data: { error: code } } = err.response;
-      assert(false, status, new Error(`Error from Slack: ${code}`));
+      const { data: { error: code } } = err.response;
+      assert(false, new Error(`Error from Slack: ${code}`));
     } else {
       throw err;
     }
@@ -2205,7 +2205,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"d528cfc1"}`;
+`${"17413cbc"}`;
 
 if (!module.parent) {
   module.exports();
