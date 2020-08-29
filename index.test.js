@@ -28,7 +28,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       assert.deepStrictEqual(context, {
         type: 'context',
         elements: [
-          '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/master|master>) (<https://github.com/a/b/commit/shashasha|#shashas>)',
+          { type: 'mrkdwn', text: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/master|master>) (<https://github.com/a/b/commit/shashasha|#shashas>)' },
         ],
       });
     });
@@ -39,8 +39,8 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       assert.deepStrictEqual(context, {
         type: 'context',
         elements: [
-          '*Trigger* by *<https://github.com/jdrydn|jdrydn>* from *<https://github.com/a/b/commit/shashasha/checks|CICD>*',
-          '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/master|master>) (<https://github.com/a/b/commit/shashasha|#shashas>)',
+          { type: 'mrkdwn', text: '*Trigger* by *<https://github.com/jdrydn|jdrydn>* from *<https://github.com/a/b/commit/shashasha/checks|CICD>*' },
+          { type: 'mrkdwn', text: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/master|master>) (<https://github.com/a/b/commit/shashasha|#shashas>)' },
         ],
       });
     });
@@ -62,7 +62,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       assert.deepStrictEqual(context, {
         type: 'context',
         elements: [
-          '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/pr-ref|pr-ref>) (<https://github.com/a/b/commit/pr-shashasha|#pr-shas>)',
+          { type: 'mrkdwn', text: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/pr-ref|pr-ref>) (<https://github.com/a/b/commit/pr-shashasha|#pr-shas>)' },
         ],
       });
     });
@@ -86,8 +86,8 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       assert.deepStrictEqual(context, {
         type: 'context',
         elements: [
-          '*Pull Request* by *<https://github.com/jdrydn|jdrydn>* from *<https://github.com/a/b/commit/pr-shashasha/checks|CICD>*',
-          '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/pr-ref|pr-ref>) (<https://github.com/a/b/commit/pr-shashasha|#pr-shas>)',
+          { type: 'mrkdwn', text: '*Pull Request* by *<https://github.com/jdrydn|jdrydn>* from *<https://github.com/a/b/commit/pr-shashasha/checks|CICD>*' },
+          { type: 'mrkdwn', text: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/pr-ref|pr-ref>) (<https://github.com/a/b/commit/pr-shashasha|#pr-shas>)' },
         ],
       });
     });
