@@ -2155,8 +2155,8 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
 
   try {
     const { status, data } = await axios.post(url, body, { headers });
-    assert(data && data.ok === true, status, new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
-    debug(data);
+    debug({ status, data });
+    assert(data && data.ok === true, new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
     return data;
   } catch (err) {
     /* istanbul ignore else */
@@ -2216,7 +2216,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"e1879ad4"}`;
+`${"a2178aeb"}`;
 
 if (!module.parent) {
   module.exports();
