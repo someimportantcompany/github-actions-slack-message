@@ -26,7 +26,6 @@ jobs:
       - name: someimportantcompany/github-actions-slack-notify@latest
         uses: ./
         with:
-          channel: ${{ env.SLACK_CHANNEL }}
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           text: Firing a webhook message
         env:

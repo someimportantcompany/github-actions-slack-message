@@ -7,11 +7,8 @@ runs:
   using: node12
   main: ./index.dist.js
 inputs:
-  channel:
-    description: The Slack channel - check the README for where to find this.
-    required: true
   text:
-    description: Text to send to Slack - in Slack's "mrkdwn" format.
+    description: Text to send to Slack, in Slack's "mrkdwn" format - required.
     required: true
   bot-token:
     description: A Slack bot token to send messages with - required if `webhook-url` was not provided.
@@ -19,11 +16,14 @@ inputs:
   webhook-url:
     description: A Slack webhook URL to send messages to - required if `bot-token` was not provided.
     required: false
+  channel:
+    description: The Slack channel - required if `bot-token` was provided.
+    required: false
   color:
     description: The colour of the Slack attachment.
     required: false
   message-id:
-    description: The ID of the existing Slack message to update - only works if `bot-token` was provided.
+    description: The ID of the existing Slack message to update - only valid if `bot-token` was provided.
     required: false
 outputs:
   message-id:
