@@ -30,10 +30,10 @@ If you are planning to send multiple Slack messages per invocation, and you'd pr
 
 ```yml
 - uses: someimportantcompany/github-actions-slack-notify@v1
+  id: slack
   with:
     channel: ${{ env.SLACK_CHANNEL }}
     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-    id: slack
     text: Deployment started
 
 - run: npm run deploy
