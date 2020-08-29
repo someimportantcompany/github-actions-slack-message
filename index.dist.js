@@ -2096,6 +2096,21 @@ const core = __webpack_require__(98);
 const github = __webpack_require__(100);
 const util = __webpack_require__(6);
 
+const COLORS = {
+  'good': 'good',
+  'warning': 'warning',
+  'danger': 'danger',
+
+  'success': 'good',
+  'failed': 'danger',
+  'info': '#17a2b8',
+
+  'gray': '#B6B6B6',
+  'grey': '#B6B6B6',
+  'orange': '#FF4500',
+  'purple': '#9400D3',
+};
+
 /* istanbul ignore next */ // eslint-disable-next-line no-console
 const debug = process.env.SHOW_DEBUG ? console.log : () => null;
 
@@ -2203,7 +2218,7 @@ module.exports = async function slackNotify() {
       ...(color ? {
         attachments: [
           {
-            color,
+            color: COLORS[color] || (`${color}`.startsWith('#') ? color : `#${color}`),
             fallback: `${buildFallbackPrefix(github.context)} ${text}`,
             blocks: [
               { type: 'section', text: { type: 'mrkdwn', verbatim: false, text } },
@@ -2240,7 +2255,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"b9e4c86c"}`;
+`${"15ab2d08"}`;
 
 if (!module.parent) {
   module.exports();
