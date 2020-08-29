@@ -24,6 +24,9 @@ This action sends message to Slack during your GitHub Actions workflow. It takes
 
 ![Individual messages](./Screenshot%202020-08-29%20at%2019.10.52.png)
 
+- Including a `color` wraps your message in a (soon to be deprecated) `attachments` block.
+- Links refer back to your repository, the branch & the commit.
+
 ### Updating an existing message
 
 If you are planning to send multiple Slack messages per invocation, and you'd prefer to update a single message instead of posting multiple messages, you can pass the first Slack message's `message-id` to future calls, thus updating in place. **A `bot-token` is required to update messages.**
