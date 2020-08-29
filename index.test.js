@@ -79,8 +79,8 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
               ref: 'pr-ref',
               sha: 'pr-shashasha',
             },
-          }
-        }
+          },
+        },
       });
 
       assert.deepStrictEqual(context, {
@@ -90,6 +90,34 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
           { type: 'mrkdwn', text: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/pr-ref|pr-ref>) (<https://github.com/a/b/commit/pr-shashasha|#pr-shas>)' },
         ],
       });
+    });
+  });
+
+  describe('buildFallbackPrefix', () => {
+    const buildFallbackPrefix = action.__get__('buildFallbackPrefix');
+    const defaults = { repo: { owner: 'a', repo: 'b' }, ref: 'refs/heads/master' };
+
+    it('should create a Slack fallback prefix', () => {
+      const context = buildFallbackPrefix({ ...defaults });
+      assert.strictEqual(context, 'a/b (master)');
+    });
+
+    it('should create a Slack fallback prefix for a pull-request', () => {
+      const context = buildFallbackPrefix({
+        ...defaults,
+        eventName: 'pull_request',
+        actor: 'jdrydn',
+        workflow: 'CICD',
+        payload: {
+          pull_request: {
+            head: {
+              ref: 'pr-ref',
+              sha: 'pr-shashasha',
+            },
+          },
+        },
+      });
+      assert.strictEqual(context, 'a/b (pr-ref)');
     });
   });
 
@@ -159,6 +187,9 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
     });
   });
 
+  const buildContextBlock = () => ({ type: 'context' });
+  const buildFallbackPrefix = () => 'Fallback:';
+
   it('should send a message to Slack', async () => {
     const core = mockCore({
       inputs: {
@@ -170,14 +201,13 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       },
     });
 
-    const buildContextBlock = () => ({ type: 'context' });
-
     const sendToSlack = (conn, context, args) => {
       assert.deepStrictEqual(conn, {
         botToken: null,
         webhookUrl: 'some-important-webhook-url',
       });
       assert.deepStrictEqual(args, {
+        text: 'Fallback: Some important message',
         blocks: [
           { type: 'section', text: { type: 'mrkdwn', verbatim: false, text: 'Some important message' } },
           buildContextBlock(),
@@ -188,7 +218,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       };
     };
 
-    await action.__with__({ core, buildContextBlock, sendToSlack })(() => action());
+    await action.__with__({ core, buildContextBlock, buildFallbackPrefix, sendToSlack })(() => action());
 
     assert.strictEqual(core.getOutput('message-id'), null);
   });
@@ -204,8 +234,6 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       },
     });
 
-    const buildContextBlock = () => ({ type: 'context' });
-
     const sendToSlack = (conn, context, args) => {
       assert.deepStrictEqual(conn, {
         botToken: 'some-important-bot-token',
@@ -217,6 +245,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         attachments: [
           {
             color: 'good',
+            fallback: 'Fallback: Some important message',
             blocks: [
               { type: 'section', text: { type: 'mrkdwn', verbatim: false, text: 'Some important message' } },
               buildContextBlock(),
@@ -229,7 +258,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       };
     };
 
-    await action.__with__({ core, buildContextBlock, sendToSlack })(() => action());
+    await action.__with__({ core, buildContextBlock, buildFallbackPrefix, sendToSlack })(() => action());
 
     assert.strictEqual(core.getOutput('message-id'), 'some-message-id');
     assert.strictEqual(core.getFailed(), null);
