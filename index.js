@@ -95,7 +95,7 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
 
   try {
     const { status, data } = await axios.post(url, body, { headers });
-    debug('%s %j', { status, data });
+    debug('%s %j', status, data);
     assert(!botToken || (data && data.ok === true), new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
     assert(!webhookUrl || data === 'ok', new Error('Error from Slack: Response not OK'));
     return data;
