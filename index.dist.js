@@ -2179,11 +2179,11 @@ module.exports = async function slackNotify() {
     const color = core.getInput('color');
     const existingMessageID = core.getInput('message-id');
 
-    debug('%s', { channel, botToken, webhookUrl, text, color, existingMessageID });
+    debug('%s', { botToken, webhookUrl, channel, text, color, existingMessageID });
 
-    assert(channel, new Error('Expected `channel` input'));
     assert(text, new Error('Expected `text` input'));
     assert(botToken || webhookUrl, new Error('Expected `bot-token` or `webhook-url` input'));
+    assert(!botToken || channel, new Error('Expected `channel` since `bot-token` input was passed'));
     assert(!existingMessageID || botToken, new Error('Expected `bot-token` since `message-id` input was passed'));
 
     const blocks = [
@@ -2192,14 +2192,17 @@ module.exports = async function slackNotify() {
     ];
 
     const args = {
-      channel,
+      ...(botToken ? { channel } : {}),
       ...(color ? { attachments: [ { color, blocks } ] } : { blocks }),
       ...(existingMessageID ? { ts: existingMessageID } : {}),
     };
 
     const { ts: sentMessageID } = await sendToSlack({ botToken, webhookUrl }, github.context, args);
     debug('%s', { sentMessageID });
-    core.setOutput('message-id', sentMessageID);
+
+    if (botToken) {
+      core.setOutput('message-id', sentMessageID);
+    }
   } catch (err) /* istanbul ignore next */ {
     core.setFailed(err.message);
 
@@ -2213,7 +2216,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"44247d44"}`;
+`${"e1879ad4"}`;
 
 if (!module.parent) {
   module.exports();
