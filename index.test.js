@@ -18,35 +18,47 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
     process.env.THROW_ERR = true;
   });
 
-  describe('buildContextBlock', () => {
-    const buildContextBlock = action.__get__('buildContextBlock');
+  describe('buildAttachmentBlock', () => {
+    const buildAttachmentBlock = action.__get__('buildAttachmentBlock');
     const defaults = { repo: { owner: 'a', repo: 'b' }, ref: 'refs/heads/master', sha: 'shashasha' };
 
-    it('should create a Slack context', () => {
-      const context = buildContextBlock({ ...defaults });
+    it('should create a Slack attachment', () => {
+      const attachment = buildAttachmentBlock({ ...defaults }, {});
 
-      assert.deepStrictEqual(context, {
-        type: 'context',
-        elements: [
-          { type: 'mrkdwn', text: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/master|master>) (<https://github.com/a/b/commit/shashasha|#shashas>)' },
-        ],
+      assert.deepStrictEqual(attachment, {
+        fallback: '[a/b] (master) undefined',
+        mrkdwn_in: [ 'text' ],
+        text: undefined,
+        footer: (a => a.join(' '))([
+          '*<https://github.com/a/b|a/b>*',
+          '(<https://github.com/a/b/tree/master|master> <https://github.com/a/b/commit/shashasha|shashas>)',
+        ]),
+        footer_icon: 'https://github.com/a.png',
       });
     });
 
-    it('should create a Slack context with an author', () => {
-      const context = buildContextBlock({ ...defaults, actor: 'jdrydn', workflow: 'CICD' });
+    it('should create a Slack attachment with an author', () => {
+      const attachment = buildAttachmentBlock({ ...defaults, actor: 'jdrydn', workflow: 'CI/CD' }, {});
 
-      assert.deepStrictEqual(context, {
-        type: 'context',
-        elements: [
-          { type: 'mrkdwn', text: '*Trigger* by *<https://github.com/jdrydn|jdrydn>* from *<https://github.com/a/b/commit/shashasha/checks|CICD>*' },
-          { type: 'mrkdwn', text: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/master|master>) (<https://github.com/a/b/commit/shashasha|#shashas>)' },
-        ],
+      assert.deepStrictEqual(attachment, {
+        fallback: '[a/b] (master) undefined',
+        mrkdwn_in: [ 'text' ],
+        author_name: 'jdrydn',
+        author_icon: 'https://github.com/jdrydn.png',
+        author_link: 'https://github.com/jdrydn',
+        title: 'CI/CD',
+        title_link: 'https://github.com/a/b/commit/shashasha/checks',
+        text: undefined,
+        footer: (a => a.join(' '))([
+          '*<https://github.com/a/b|a/b>*',
+          '(<https://github.com/a/b/tree/master|master> <https://github.com/a/b/commit/shashasha|shashas>)',
+        ]),
+        footer_icon: 'https://github.com/a.png',
       });
     });
 
-    it('should create a Slack context with a pull-request', () => {
-      const context = buildContextBlock({
+    it('should create a Slack attachment with a pull-request', () => {
+      const attachment = buildAttachmentBlock({
         ...defaults,
         eventName: 'pull_request',
         payload: {
@@ -57,22 +69,26 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
             },
           }
         }
-      });
+      }, {});
 
-      assert.deepStrictEqual(context, {
-        type: 'context',
-        elements: [
-          { type: 'mrkdwn', text: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/pr-ref|pr-ref>) (<https://github.com/a/b/commit/pr-shashasha|#pr-shas>)' },
-        ],
+      assert.deepStrictEqual(attachment, {
+        fallback: '[a/b] (pr-ref) undefined',
+        mrkdwn_in: [ 'text' ],
+        text: undefined,
+        footer: (a => a.join(' '))([
+          '*<https://github.com/a/b|a/b>*',
+          '(<https://github.com/a/b/tree/pr-ref|pr-ref> <https://github.com/a/b/commit/pr-shashasha|pr-shas>)',
+        ]),
+        footer_icon: 'https://github.com/a.png',
       });
     });
 
-    it('should create a Slack context with a pull-request & author', () => {
-      const context = buildContextBlock({
+    it('should create a Slack attachment with a pull-request & author', () => {
+      const attachment = buildAttachmentBlock({
         ...defaults,
         eventName: 'pull_request',
         actor: 'jdrydn',
-        workflow: 'CICD',
+        workflow: 'CI/CD',
         payload: {
           pull_request: {
             head: {
@@ -81,43 +97,23 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
             },
           },
         },
+      }, {});
+
+      assert.deepStrictEqual(attachment, {
+        fallback: '[a/b] (pr-ref) undefined',
+        mrkdwn_in: [ 'text' ],
+        author_name: 'jdrydn',
+        author_icon: 'https://github.com/jdrydn.png',
+        author_link: 'https://github.com/jdrydn',
+        title: 'CI/CD',
+        title_link: 'https://github.com/a/b/commit/pr-shashasha/checks',
+        text: undefined,
+        footer: (a => a.join(' '))([
+          '*<https://github.com/a/b|a/b>*',
+          '(<https://github.com/a/b/tree/pr-ref|pr-ref> <https://github.com/a/b/commit/pr-shashasha|pr-shas>)',
+        ]),
+        footer_icon: 'https://github.com/a.png',
       });
-
-      assert.deepStrictEqual(context, {
-        type: 'context',
-        elements: [
-          { type: 'mrkdwn', text: '*Pull Request* by *<https://github.com/jdrydn|jdrydn>* from *<https://github.com/a/b/commit/pr-shashasha/checks|CICD>*' },
-          { type: 'mrkdwn', text: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/pr-ref|pr-ref>) (<https://github.com/a/b/commit/pr-shashasha|#pr-shas>)' },
-        ],
-      });
-    });
-  });
-
-  describe('buildFallbackPrefix', () => {
-    const buildFallbackPrefix = action.__get__('buildFallbackPrefix');
-    const defaults = { repo: { owner: 'a', repo: 'b' }, ref: 'refs/heads/master' };
-
-    it('should create a Slack fallback prefix', () => {
-      const context = buildFallbackPrefix({ ...defaults });
-      assert.strictEqual(context, 'a/b (master)');
-    });
-
-    it('should create a Slack fallback prefix for a pull-request', () => {
-      const context = buildFallbackPrefix({
-        ...defaults,
-        eventName: 'pull_request',
-        actor: 'jdrydn',
-        workflow: 'CICD',
-        payload: {
-          pull_request: {
-            head: {
-              ref: 'pr-ref',
-              sha: 'pr-shashasha',
-            },
-          },
-        },
-      });
-      assert.strictEqual(context, 'a/b (pr-ref)');
     });
   });
 
@@ -187,8 +183,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
     });
   });
 
-  const buildContextBlock = () => ({ type: 'context' });
-  const buildFallbackPrefix = () => 'Fallback:';
+  const buildAttachmentBlock = () => 'ATTACHMENT';
 
   it('should send a message to Slack', async () => {
     const core = mockCore({
@@ -207,18 +202,14 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         webhookUrl: 'some-important-webhook-url',
       });
       assert.deepStrictEqual(args, {
-        text: 'Fallback: Some important message',
-        blocks: [
-          { type: 'section', text: { type: 'mrkdwn', verbatim: false, text: 'Some important message' } },
-          buildContextBlock(),
-        ],
+        attachments: [ 'ATTACHMENT' ],
       });
       return {
         ts: 'some-message-id',
       };
     };
 
-    await action.__with__({ core, buildContextBlock, buildFallbackPrefix, sendToSlack })(() => action());
+    await action.__with__({ core, buildAttachmentBlock, sendToSlack })(() => action());
 
     assert.strictEqual(core.getOutput('message-id'), null);
   });
@@ -242,23 +233,14 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       assert.deepStrictEqual(args, {
         channel: 'some-important-channel-id',
         ts: 'some-previous-important-message-id',
-        attachments: [
-          {
-            color: 'good',
-            fallback: 'Fallback: Some important message',
-            blocks: [
-              { type: 'section', text: { type: 'mrkdwn', verbatim: false, text: 'Some important message' } },
-              buildContextBlock(),
-            ],
-          },
-        ],
+        attachments: [ 'ATTACHMENT' ],
       });
       return {
         ts: 'some-message-id',
       };
     };
 
-    await action.__with__({ core, buildContextBlock, buildFallbackPrefix, sendToSlack })(() => action());
+    await action.__with__({ core, buildAttachmentBlock, sendToSlack })(() => action());
 
     assert.strictEqual(core.getOutput('message-id'), 'some-message-id');
     assert.strictEqual(core.getFailed(), null);

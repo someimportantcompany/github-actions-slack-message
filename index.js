@@ -3,7 +3,6 @@
  * @license: MIT
  * @link: https://github.com/someimportantcompany/github-actions-slack-notify
  */
-const _startCase = require('lodash/startCase');
 const assert = require('http-assert');
 const axios = require('axios');
 const core = require('@actions/core');
@@ -16,7 +15,7 @@ const COLORS = {
   'danger': 'danger',
 
   'success': 'good',
-  'failed': 'danger',
+  'failure': 'danger',
   'info': '#17a2b8',
 
   'gray': '#DDDDDD',
@@ -28,7 +27,7 @@ const COLORS = {
 /* istanbul ignore next */ // eslint-disable-next-line no-console
 const debug = process.env.SHOW_DEBUG ? console.log : () => null;
 
-function buildContextBlock({ eventName, payload, workflow, actor, repo: { owner, repo }, ref, sha }) {
+function buildAttachmentBlock({ eventName, payload, workflow, actor, repo: { owner, repo }, ref, sha }, { color, text }) {
   assert(owner && repo, new Error('Missing owner/repo from context'));
   assert(ref, new Error('Missing git ref from context'));
   assert(sha, new Error('Missing git sha from context'));
@@ -38,39 +37,27 @@ function buildContextBlock({ eventName, payload, workflow, actor, repo: { owner,
   const branch = eventName === 'pull_request' ? payload.pull_request.head.ref : ref.replace(/^refs\/heads\//, '');
   sha = eventName === 'pull_request' ? payload.pull_request.head.sha : sha;
 
-  const elements = [];
-
-  if (actor && workflow) {
-    elements.push({
-      type: 'mrkdwn',
-      text: util.format('*%s* by *<%s|%s>* from *<%s|%s>*', ...[
-        eventName ? _startCase(eventName) : 'Trigger',
-        `https://github.com/${actor}`, actor,
-        `https://github.com/${owner}/${repo}/commit/${sha}/checks`, workflow,
-      ]),
-    });
-  }
-
-  elements.push({
-    type: 'mrkdwn',
-    text: util.format('*<%s|%s>* (<%s|%s>) (<%s|#%s>)', ...[
+  return {
+    ...(color ? { color: COLORS[color] || color } : {}),
+    fallback: `[${owner}/${repo}] (${branch}) ${text}`.trim(),
+    mrkdwn_in: [ 'text' ],
+    ...(workflow ? {
+      title: workflow,
+      title_link: `https://github.com/${owner}/${repo}/commit/${sha}/checks`,
+    } : {}),
+    text,
+    ...(actor ? {
+      author_name: actor,
+      author_link: `https://github.com/${actor}`,
+      author_icon: `https://github.com/${actor}.png`,
+    } : {}),
+    footer: util.format('*<%s|%s>* (<%s|%s> <%s|%s>)', ...[
       `https://github.com/${owner}/${repo}`, `${owner}/${repo}`,
-      `https://github.com/${owner}/${repo}/tree/${branch}`, `${branch}`,
-      `https://github.com/${owner}/${repo}/commit/${sha}`, `${sha.substr(0, 7)}`,
+      `https://github.com/${owner}/${repo}/tree/${branch}`, branch,
+      `https://github.com/${owner}/${repo}/commit/${sha}`, sha.substr(0, 7),
     ]),
-  });
-
-  return { type: 'context', elements };
-}
-
-function buildFallbackPrefix({ eventName, payload, repo: { owner, repo }, ref }) {
-  assert(owner && repo, new Error('Missing owner/repo from context'));
-  assert(ref, new Error('Missing git ref from context'));
-
-  assert(eventName !== 'pull_request' || (payload && payload.pull_request), new Error('Missing pull request payload'));
-  const branch = eventName === 'pull_request' ? payload.pull_request.head.ref : ref.replace(/^refs\/heads\//, '');
-
-  return util.format('%s/%s (%s)', owner, repo, branch);
+    footer_icon: `https://github.com/${owner}.png`,
+  };
 }
 
 async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {} } = {}, body = null) {
@@ -127,26 +114,11 @@ module.exports = async function slackNotify() {
     assert(!botToken || channel, new Error('Expected `channel` since `bot-token` input was passed'));
     assert(!existingMessageID || botToken, new Error('Expected `bot-token` since `message-id` input was passed'));
 
+    const attachment = buildAttachmentBlock(github.context, { color, text });
+
     const args = {
       ...(botToken ? { channel } : {}),
-      ...(color ? {
-        attachments: [
-          {
-            color: COLORS[color] || (`${color}`.startsWith('#') ? color : `#${color}`),
-            fallback: `${buildFallbackPrefix(github.context)} ${text}`,
-            blocks: [
-              { type: 'section', text: { type: 'mrkdwn', verbatim: false, text } },
-              buildContextBlock(github.context),
-            ],
-          }
-        ]
-      } : {
-        text: `${buildFallbackPrefix(github.context)} ${text}`,
-        blocks: [
-          { type: 'section', text: { type: 'mrkdwn', verbatim: false, text } },
-          buildContextBlock(github.context),
-        ],
-      }),
+      attachments: [ attachment ],
       ...(existingMessageID ? { ts: existingMessageID } : {}),
     };
 
@@ -171,6 +143,7 @@ module.exports = async function slackNotify() {
 // eslint-disable-next-line no-unused-expressions
 `${process.env.VARIANCE}`;
 
+/* istanbul ignore next */
 if (!module.parent) {
   module.exports();
 }
