@@ -80,7 +80,7 @@ Alongside the Slack default colors `good`, `warning` & `danger`, this action sup
     color: failed # Aliased color
 ```
 
-### Running if-success or if-failureå
+### Running if-success or if-failure
 
 Using built-in Actions conditionals, you can send an error if the job succeeded or failed.
 
@@ -99,7 +99,7 @@ Using built-in Actions conditionals, you can send an error if the job succeeded 
     color: failure
 ```
 
-## Inputsååååå
+## Inputs
 
 | Key | Description |
 | ---- | ---- |
