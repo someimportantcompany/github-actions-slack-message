@@ -13,8 +13,7 @@ This action sends message to Slack during your GitHub Actions workflow. It takes
   with:
     channel: ${{ env.SLACK_CHANNEL }}
     bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-    text: All looks good to me!
-    color: '#B6B6B6'
+    text: Firing a bot-token message
 
 - uses: someimportantcompany/github-actions-slack-message@v1
   with:
@@ -22,7 +21,7 @@ This action sends message to Slack during your GitHub Actions workflow. It takes
     text: Firing a webhook message
 ```
 
-![Individual messages](./Screenshot%202020-08-29%20at%2019.10.52.png)
+![Individual messages](./Screenshot%202020-08-30%20at%2022.49.56.png)
 
 - Including a `color` wraps your message in a (soon to be deprecated) `attachments` block.
 - Links refer back to your repository, the branch & the commit.
@@ -50,7 +49,7 @@ If you are planning to send multiple Slack messages per invocation, and you'd pr
     message-id: ${{ steps.slack.outputs.message-id }}
 ```
 
-![Updating message](./Screenshot%202020-08-29%20at%2020.07.02.gif)
+![Updating message](./Screenshot%202020-08-30%20at%2022.48.56.gif)
 
 ### Additional colors
 
