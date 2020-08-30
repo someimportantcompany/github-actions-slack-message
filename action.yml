@@ -10,6 +10,9 @@ inputs:
   text:
     description: Text to send to Slack, in Slack's "mrkdwn" format - required.
     required: true
+  color:
+    description: The colour of the Slack attachment.
+    required: false
   bot-token:
     description: A Slack bot token to send messages with - required if `webhook-url` was not provided.
     required: false
@@ -18,9 +21,6 @@ inputs:
     required: false
   channel:
     description: The Slack channel - required if `bot-token` was provided.
-    required: false
-  color:
-    description: The colour of the Slack attachment.
     required: false
   message-id:
     description: The ID of the existing Slack message to update - only valid if `bot-token` was provided.
