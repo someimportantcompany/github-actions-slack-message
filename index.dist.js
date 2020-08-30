@@ -2050,7 +2050,7 @@ function buildAttachmentBlock({ eventName, payload, workflow, actor, repo: { own
     fallback: `[${owner}/${repo}] (${branch}) ${text}`.trim(),
     mrkdwn_in: [ 'text' ],
     ...(workflow ? {
-      title: workflow,
+      title: `${workflow} (#${sha.substr(0, 7)})`,
       title_link: `https://github.com/${owner}/${repo}/commit/${sha}/checks`,
     } : {}),
     text,
@@ -2059,10 +2059,9 @@ function buildAttachmentBlock({ eventName, payload, workflow, actor, repo: { own
       author_link: `https://github.com/${actor}`,
       author_icon: `https://github.com/${actor}.png`,
     } : {}),
-    footer: util.format('*<%s|%s>* (<%s|%s> <%s|%s>)', ...[
+    footer: util.format('*<%s|%s>* (<%s|%s>)', ...[
       `https://github.com/${owner}/${repo}`, `${owner}/${repo}`,
       `https://github.com/${owner}/${repo}/tree/${branch}`, branch,
-      `https://github.com/${owner}/${repo}/commit/${sha}`, sha.substr(0, 7),
     ]),
     footer_icon: `https://github.com/${owner}.png`,
   };
@@ -2149,7 +2148,7 @@ module.exports = async function slackNotify() {
 };
 
 // eslint-disable-next-line no-unused-expressions
-`${"38abf75e"}`;
+`${"b736b36b"}`;
 
 /* istanbul ignore next */
 if (!module.parent) {
