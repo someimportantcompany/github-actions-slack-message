@@ -29,10 +29,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         fallback: '[a/b] (master) undefined',
         mrkdwn_in: [ 'text' ],
         text: undefined,
-        footer: (a => a.join(' '))([
-          '*<https://github.com/a/b|a/b>*',
-          '(<https://github.com/a/b/tree/master|master> <https://github.com/a/b/commit/shashasha|shashas>)',
-        ]),
+        footer: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/master|master>)',
         footer_icon: 'https://github.com/a.png',
       });
     });
@@ -46,13 +43,10 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         author_name: 'jdrydn',
         author_icon: 'https://github.com/jdrydn.png',
         author_link: 'https://github.com/jdrydn',
-        title: 'CI/CD',
+        title: 'CI/CD (#shashas)',
         title_link: 'https://github.com/a/b/commit/shashasha/checks',
         text: undefined,
-        footer: (a => a.join(' '))([
-          '*<https://github.com/a/b|a/b>*',
-          '(<https://github.com/a/b/tree/master|master> <https://github.com/a/b/commit/shashasha|shashas>)',
-        ]),
+        footer: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/master|master>)',
         footer_icon: 'https://github.com/a.png',
       });
     });
@@ -75,10 +69,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         fallback: '[a/b] (pr-ref) undefined',
         mrkdwn_in: [ 'text' ],
         text: undefined,
-        footer: (a => a.join(' '))([
-          '*<https://github.com/a/b|a/b>*',
-          '(<https://github.com/a/b/tree/pr-ref|pr-ref> <https://github.com/a/b/commit/pr-shashasha|pr-shas>)',
-        ]),
+        footer: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/pr-ref|pr-ref>)',
         footer_icon: 'https://github.com/a.png',
       });
     });
@@ -105,13 +96,10 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         author_name: 'jdrydn',
         author_icon: 'https://github.com/jdrydn.png',
         author_link: 'https://github.com/jdrydn',
-        title: 'CI/CD',
+        title: 'CI/CD (#pr-shas)',
         title_link: 'https://github.com/a/b/commit/pr-shashasha/checks',
         text: undefined,
-        footer: (a => a.join(' '))([
-          '*<https://github.com/a/b|a/b>*',
-          '(<https://github.com/a/b/tree/pr-ref|pr-ref> <https://github.com/a/b/commit/pr-shashasha|pr-shas>)',
-        ]),
+        footer: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/pr-ref|pr-ref>)',
         footer_icon: 'https://github.com/a.png',
       });
     });
