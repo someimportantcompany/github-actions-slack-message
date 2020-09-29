@@ -115,7 +115,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       const scope = nock('https://slack.com', {
           reqheaders: {
             authorization: 'Bearer some-important-bot-token',
-            'user-agent': 'a/b (via @someimportantcompany/github-actions-slack-notify)',
+            'user-agent': 'a/b (via someimportantcompany/github-actions-slack-notify)',
           },
         })
         .post('/api/chat.postMessage', { text: 'c' })
@@ -130,7 +130,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
       const scope = nock('https://slack.com', {
           reqheaders: {
             authorization: 'Bearer some-important-bot-token',
-            'user-agent': 'a/b (via @someimportantcompany/github-actions-slack-notify)',
+            'user-agent': 'a/b (via someimportantcompany/github-actions-slack-notify)',
           },
         })
         .post('/api/chat.postMessage', { text: 'c' })
@@ -149,7 +149,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
     it('should send a message to a webhook URL', async () => {
       const scope = nock('https://some-important-webhook', {
           reqheaders: {
-            'user-agent': 'a/b (via @someimportantcompany/github-actions-slack-notify)',
+            'user-agent': 'a/b (via someimportantcompany/github-actions-slack-notify)',
           },
         })
         .post('/', { text: 'c' })
@@ -190,6 +190,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         webhookUrl: 'some-important-webhook-url',
       });
       assert.deepStrictEqual(args, {
+        channel: 'some-important-channel-id',
         attachments: [ 'ATTACHMENT' ],
       });
       return {

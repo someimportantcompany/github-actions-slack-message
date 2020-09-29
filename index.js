@@ -64,7 +64,7 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
 
   let url = 'https://api.slack.com';
   const headers = {
-    'user-agent': `${owner}/${repo} (via @someimportantcompany/github-actions-slack-notify)`,
+    'user-agent': `${owner}/${repo} (via someimportantcompany/github-actions-slack-notify)`,
   };
 
   if (webhookUrl) {
@@ -104,19 +104,28 @@ module.exports = async function slackNotify() {
     const webhookUrl = core.getInput('webhook-url');
     const text = core.getInput('text');
     const color = core.getInput('color');
+    const username = core.getInput('username');
+    const iconEmoji = core.getInput('icon-emoji');
+    const iconUrl = core.getInput('icon-url');
     const existingMessageID = core.getInput('message-id');
 
     debug('%s', { botToken, webhookUrl, channel, text, color, existingMessageID });
 
-    assert(text, new Error('Expected `text` input'));
     assert(botToken || webhookUrl, new Error('Expected `bot-token` or `webhook-url` input'));
-    assert(!botToken || channel, new Error('Expected `channel` since `bot-token` input was passed'));
+    assert(text, new Error('Expected `text` input'));
+
+    assert(!botToken || channel, new Error('Expected `channel` input since `bot-token` was passed'));
     assert(!existingMessageID || botToken, new Error('Expected `bot-token` since `message-id` input was passed'));
 
     const attachment = buildAttachmentBlock(github.context, { color, text });
 
     const args = {
-      ...(botToken ? { channel } : {}),
+      ...(channel ? { channel } : {}),
+      ...(webhookUrl ? {
+        ...(username ? { username } : {}),
+        ...(iconEmoji ? { icon_emoji: iconEmoji } : {}),
+        ...(iconUrl ? { icon_url: iconUrl } : {}),
+      } : {}),
       attachments: [ attachment ],
       ...(existingMessageID ? { ts: existingMessageID } : {}),
     };

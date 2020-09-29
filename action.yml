@@ -20,7 +20,16 @@ inputs:
     description: A Slack webhook URL to send messages to - required if `bot-token` was not provided.
     required: false
   channel:
-    description: The Slack channel - required if `bot-token` was provided.
+    description: The Slack channel - required if `bot-token`, optional with `webhook-url`.
+    required: false
+  username:
+    description: Set the webhook username - only valid if `webhook-url` was provided.
+    required: false
+  icon-emoji:
+    description: Set the webhook icon_emoji - only valid if `webhook-url` was provided.
+    required: false
+  icon-url:
+    description: Set the webhook icon_url - only valid if `webhook-url` was provided.
     required: false
   message-id:
     description: The ID of the existing Slack message to update - only valid if `bot-token` was provided.
