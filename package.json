@@ -21,7 +21,7 @@
     "message"
   ],
   "dependencies": {
-    "@actions/core": "^1.2.5",
+    "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
     "axios": "^0.20.0",
     "http-assert": "^1.4.1",
