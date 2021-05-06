@@ -6,7 +6,9 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "lint": "eslint .",
-    "test": "nyc --reporter=lcov --reporter=text mocha *.test.js"
+    "test": "nyc --reporter=lcov --reporter=text mocha *.test.js",
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
