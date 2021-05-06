@@ -3,10 +3,9 @@
  * @license: MIT
  * @link: https://github.com/someimportantcompany/github-actions-slack-notify
  */
-const assert = require('http-assert');
 const axios = require('axios');
 const core = require('@actions/core');
-const github = require('@actions/github');
+const debug = require('debug')('slack-message');
 const util = require('util');
 
 const COLORS = {
@@ -24,64 +23,66 @@ const COLORS = {
   'purple': '#9400D3',
 };
 
-/* istanbul ignore next */ // eslint-disable-next-line no-console
-const debug = process.env.SHOW_DEBUG ? console.log : () => null;
+function buildAttachmentBlock({ color, text }) {
+  const {
+    GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID, GITHUB_WORKFLOW, GITHUB_EVENT_NAME,
+    GITHUB_REF, GITHUB_SHA, GITHUB_ACTOR, GITHUB_HEAD_REF,
+  } = process.env;
+  assert(GITHUB_SERVER_URL, new Error('Missing { GITHUB_SERVER_URL } env'));
+  assert(GITHUB_REPOSITORY, new Error('Missing { GITHUB_REPOSITORY } env'));
+  assert(GITHUB_REF, new Error('Missing { GITHUB_REF } env'));
 
-function buildAttachmentBlock({ eventName, payload, workflow, actor, repo: { owner, repo }, ref, sha }, { color, text }) {
-  assert(owner && repo, new Error('Missing owner/repo from context'));
-  assert(ref, new Error('Missing git ref from context'));
-  assert(sha, new Error('Missing git sha from context'));
-
-  assert(eventName !== 'pull_request' || (payload && payload.pull_request), new Error('Missing pull request payload'));
-
-  const branch = eventName === 'pull_request' ? payload.pull_request.head.ref : ref.replace(/^refs\/heads\//, '');
-  sha = eventName === 'pull_request' ? payload.pull_request.head.sha : sha;
+  assert(GITHUB_EVENT_NAME !== 'pull_request' || GITHUB_HEAD_REF, new Error('Missing pull request ref'));
+  const BRANCH = (GITHUB_EVENT_NAME === 'pull_request' ? GITHUB_HEAD_REF : GITHUB_REF).replace(/^refs\/heads\//, '');
 
   return {
     ...(color ? { color: COLORS[color] || color } : {}),
-    fallback: `[${owner}/${repo}] (${branch}) ${text}`.trim(),
+    fallback: `[${GITHUB_REPOSITORY}] (${BRANCH}) ${text}`.trim(),
     mrkdwn_in: [ 'text' ],
-    ...(workflow ? {
-      title: `${workflow} (#${sha.substr(0, 7)})`,
-      title_link: `https://github.com/${owner}/${repo}/commit/${sha}/checks`,
+    ...(GITHUB_WORKFLOW && GITHUB_SHA && GITHUB_RUN_ID ? {
+      title: `${GITHUB_WORKFLOW} (#${GITHUB_SHA.substr(0, 8)})`,
+      title_link: `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`,
     } : {}),
     text,
-    ...(actor ? {
-      author_name: actor,
-      author_link: `https://github.com/${actor}`,
-      author_icon: `https://github.com/${actor}.png`,
+    ...(GITHUB_ACTOR ? {
+      author_name: GITHUB_ACTOR,
+      author_link: `${GITHUB_SERVER_URL}/${GITHUB_ACTOR}`,
+      author_icon: `${GITHUB_SERVER_URL}/${GITHUB_ACTOR}.png`,
     } : {}),
     footer: util.format('*<%s|%s>* (<%s|%s>)', ...[
-      `https://github.com/${owner}/${repo}`, `${owner}/${repo}`,
-      `https://github.com/${owner}/${repo}/tree/${branch}`, branch,
+      `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}`, `${GITHUB_REPOSITORY}`,
+      `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${BRANCH}`, BRANCH,
     ]),
-    footer_icon: `https://github.com/${owner}.png`,
+    // footer_icon: `${GITHUB_SERVER_URL}/${owner}.png`,
   };
 }
 
-async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {} } = {}, body = null) {
-  assert(owner && repo, new Error('Missing owner/repo from context'));
+async function sendToSlack({ botToken, webhookUrl }, body) {
+  const { GITHUB_REPOSITORY } = process.env;
+  assert(GITHUB_REPOSITORY, new Error('Missing { GITHUB_REPOSITORY } env'));
+  assert(webhookUrl || botToken, new Error('Missing botToken/webhookUrl'));
+  assert(Object.prototype.toString.call(body) === '[object Object]', new Error('Expected body to be an object'));
 
   let url = 'https://api.slack.com';
   const headers = {
-    'user-agent': `${owner}/${repo} (via someimportantcompany/github-actions-slack-notify)`,
+    'user-agent': `${GITHUB_REPOSITORY} (via someimportantcompany/github-actions-slack-notify)`,
   };
 
   if (webhookUrl) {
+    assert(typeof webhookUrl === 'string', new TypeError('Expected webhookUrl to be a string'));
     url = webhookUrl;
-  } else if (botToken) {
-    assert(typeof botToken === 'string', new TypeError('Expected `botToken` to be a string'));
+  } else {
+    assert(typeof botToken === 'string', new TypeError('Expected botToken to be a string'));
     url = `https://slack.com/api/chat.${body && body.ts ? 'update' : 'postMessage'}`;
     headers.authorization = botToken.startsWith('Bearer ') ? botToken : `Bearer ${botToken}`;
-  } else {
-    throw new Error('Missing botToken/webhookUrl');
   }
 
-  debug('%s %s %j', url, headers, body);
+  debug('%s %j %j', url, headers, body);
 
   try {
     const { status, data } = await axios.post(url, body, { headers });
     debug('%s %j', status, data);
+    /* istanbul ignore next */
     assert(!botToken || (data && data.ok === true), new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
     assert(!webhookUrl || data === 'ok', new Error('Error from Slack: Response not OK'));
     return data;
@@ -89,7 +90,7 @@ async function sendToSlack({ botToken, webhookUrl }, { repo: { owner, repo } = {
     /* istanbul ignore else */
     if (err.response && err.response.data && err.response.data.error) {
       const { data: { error: code, response_metadata } } = err.response;
-      debug({ error: code, response_metadata });
+      debug('%j', { error: code, response_metadata });
       assert(false, new Error(`Error from Slack: ${code}`));
     } else {
       throw err;
@@ -109,7 +110,7 @@ module.exports = async function slackNotify() {
     const iconUrl = core.getInput('icon-url');
     const existingMessageID = core.getInput('message-id');
 
-    debug('%s', { botToken, webhookUrl, channel, text, color, existingMessageID });
+    debug('%j', { botToken, webhookUrl, channel, text, color, existingMessageID });
 
     assert(botToken || webhookUrl, new Error('Expected `bot-token` or `webhook-url` input'));
     assert(text, new Error('Expected `text` input'));
@@ -117,7 +118,7 @@ module.exports = async function slackNotify() {
     assert(!botToken || channel, new Error('Expected `channel` input since `bot-token` was passed'));
     assert(!existingMessageID || botToken, new Error('Expected `bot-token` since `message-id` input was passed'));
 
-    const attachment = buildAttachmentBlock(github.context, { color, text });
+    const attachment = buildAttachmentBlock({ color, text });
 
     const args = {
       ...(channel ? { channel } : {}),
@@ -129,24 +130,25 @@ module.exports = async function slackNotify() {
       attachments: [ attachment ],
       ...(existingMessageID ? { ts: existingMessageID } : {}),
     };
+    debug('%j', args);
 
-    const { ts: sentMessageID } = await sendToSlack({ botToken, webhookUrl }, github.context, args);
-    debug('%s', { sentMessageID });
+    const { ts: sentMessageID } = await sendToSlack({ botToken, webhookUrl }, args);
+    debug('%j', { sentMessageID });
 
     if (botToken) {
       core.setOutput('message-id', sentMessageID);
     }
   } catch (err) /* istanbul ignore next */ {
     core.setFailed(err.message);
-
-    /* istanbul ignore next */ // eslint-disable-next-line no-console,no-unused-expressions
-    process.env.SHOW_DEBUG ? console.error(err) : () => null;
-
-    if (process.env.THROW_ERR) {
-      throw err;
-    }
+    process.env.NODE_ENV !== 'production' && assert(false, err); // eslint-disable-line no-unused-expressions
   }
 };
+
+function assert(value, err) {
+  if (Boolean(value) === false) {
+    throw err;
+  }
+}
 
 // eslint-disable-next-line no-unused-expressions
 `${process.env.VARIANCE}`;
