@@ -1,6 +1,6 @@
 {
   "name": "@someimportantcompany/github-actions-slack-message",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Send messages to Slack from GitHub Actions.",
   "main": "index.dist.js",
   "scripts": {
