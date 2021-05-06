@@ -20,7 +20,6 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production'),
-      'process.env.SERVER_ENV': JSON.stringify('WEBPACK'),
       'process.env.VARIANCE': JSON.stringify(crypto.randomBytes(4).toString('hex')),
     }),
   ],
