@@ -108,6 +108,8 @@ Using built-in Actions conditionals, you can send an error if the job succeeded 
 | `webhook-url` | **Required if** `bot-token` was not provided - a Slack webhook URL to send messages to. |
 | `channel` | A channel to send messages to - required if `bot-token` was provided. |
 | `message-id` | The ID of the existing Slack message to update - only valid if `bot-token` was provided. |
+| `image-url` | The image URL for attachment |
+| `thumb-url` | The thumb URL for attachment |
 
 ## Outputs
 

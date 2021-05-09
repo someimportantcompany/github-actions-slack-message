@@ -23,7 +23,7 @@ const COLORS = {
   'purple': '#9400D3',
 };
 
-function buildAttachmentBlock({ color, text }) {
+function buildAttachmentBlock({ color, text, imageUrl, thumbUrl }) {
   const {
     GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID, GITHUB_WORKFLOW, GITHUB_EVENT_NAME,
     GITHUB_REF, GITHUB_SHA, GITHUB_ACTOR, GITHUB_HEAD_REF,
@@ -54,6 +54,8 @@ function buildAttachmentBlock({ color, text }) {
       `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${BRANCH}`, BRANCH,
     ]),
     // footer_icon: `${GITHUB_SERVER_URL}/${owner}.png`,
+    ...(imageUrl ? { image_url: imageUrl } : {}),
+    ...(thumbUrl ? { thumb_url: thumbUrl } : {}),
   };
 }
 
@@ -109,6 +111,8 @@ module.exports = async function slackNotify() {
     const iconEmoji = core.getInput('icon-emoji');
     const iconUrl = core.getInput('icon-url');
     const existingMessageID = core.getInput('message-id');
+    const imageUrl = core.getInput('image-url');
+    const thumbUrl = core.getInput('thumb-url');
 
     debug('%j', { botToken, webhookUrl, channel, text, color, existingMessageID });
 
@@ -118,7 +122,7 @@ module.exports = async function slackNotify() {
     assert(!botToken || channel, new Error('Expected `channel` input since `bot-token` was passed'));
     assert(!existingMessageID || botToken, new Error('Expected `bot-token` since `message-id` input was passed'));
 
-    const attachment = buildAttachmentBlock({ color, text });
+    const attachment = buildAttachmentBlock({ color, text, imageUrl, thumbUrl });
 
     const args = {
       ...(channel ? { channel } : {}),
