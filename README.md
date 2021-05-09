@@ -102,7 +102,7 @@ Using built-in Actions conditionals, you can send an error if the job succeeded 
 
 | Key | Description |
 | ---- | ---- |
-| `text` | **Required**. The text to send to Slack, see below for formatting options. |
+| `text` | **Required**. The text to send to Slack, see [Slack's documentation for formatting](https://api.slack.com/reference/surfaces/formatting#basics). |
 | `color` | Specify the color of the Slack attachment. |
 | `bot-token` | **Required if** `webhook-url` was not provided - a Slack bot token to send messages with. |
 | `webhook-url` | **Required if** `bot-token` was not provided - a Slack webhook URL to send messages to. |
