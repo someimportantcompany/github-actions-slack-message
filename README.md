@@ -1,6 +1,7 @@
 # Slack Message
 
 [![CICD](https://github.com/someimportantcompany/github-actions-slack-message/workflows/CICD/badge.svg?branch=master&event=push)](https://github.com/someimportantcompany/github-actions-slack-message/actions?query=workflow%3ACICD)
+[![Coverage](https://coveralls.io/repos/github/someimportantcompany/github-actions-slack-message/badge.svg)](https://coveralls.io/github/someimportantcompany/github-actions-slack-message)
 
 Send messages to Slack from GitHub Actions.
 
