@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "lint": "eslint .",
-    "test": "nyc --reporter=lcov --reporter=text mocha ./*.test.js",
+    "test": "nyc mocha",
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
   },
@@ -41,5 +41,14 @@
   "engines": {
     "node": ">=10",
     "npm": ">=6"
+  },
+  "mocha": {
+    "exit": true,
+    "spec": [ "./*.test.js" ],
+    "ui": "bdd"
+  },
+  "nyc": {
+    "exclude": [ "*.test.js" ],
+    "reporter": [ "lcov", "text" ]
   }
 }

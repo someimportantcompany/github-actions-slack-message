@@ -49,13 +49,13 @@ function buildAttachmentBlock({ color, text, imageUrl, thumbUrl }) {
       author_link: `${GITHUB_SERVER_URL}/${GITHUB_ACTOR}`,
       author_icon: `${GITHUB_SERVER_URL}/${GITHUB_ACTOR}.png`,
     } : {}),
+    ...(imageUrl ? { image_url: imageUrl } : {}),
+    ...(thumbUrl ? { thumb_url: thumbUrl } : {}),
     footer: util.format('*<%s|%s>* (<%s|%s>)', ...[
       `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}`, `${GITHUB_REPOSITORY}`,
       `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${BRANCH}`, BRANCH,
     ]),
     footer_icon: 'https://slack.github.com/static/img/favicon-neutral.png',
-    ...(imageUrl ? { image_url: imageUrl } : {}),
-    ...(thumbUrl ? { thumb_url: thumbUrl } : {}),
   };
 }
 
