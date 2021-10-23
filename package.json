@@ -23,7 +23,7 @@
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
-    "axios": "^0.21.1",
+    "axios": "^0.23.0",
     "debug": "^4.3.1"
   },
   "devDependencies": {
@@ -35,7 +35,7 @@
     "nock": "^13.0.4",
     "nyc": "^15.1.0",
     "rewire": "^5.0.0",
-    "webpack": "^4.44.1",
+    "webpack": "^4.9.2",
     "webpack-cli": "^3.3.12"
   },
   "engines": {
@@ -44,11 +44,18 @@
   },
   "mocha": {
     "exit": true,
-    "spec": [ "./*.test.js" ],
+    "spec": [
+      "./*.test.js"
+    ],
     "ui": "bdd"
   },
   "nyc": {
-    "exclude": [ "*.test.js" ],
-    "reporter": [ "lcov", "text" ]
+    "exclude": [
+      "*.test.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ]
   }
 }
