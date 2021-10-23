@@ -47,6 +47,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         mrkdwn_in: [ 'text' ],
         text: undefined,
         footer: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/develop|develop>)',
+        footer_icon: 'https://slack.github.com/static/img/favicon-neutral.png',
       });
     });
 
@@ -64,6 +65,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         title_link: 'https://github.com/jdrydn/github-actions-slack-message/actions/runs/1234',
         text: 'Hello, world!',
         footer: '*<https://github.com/jdrydn/github-actions-slack-message|jdrydn/github-actions-slack-message>* (<https://github.com/jdrydn/github-actions-slack-message/tree/master|master>)',
+        footer_icon: 'https://slack.github.com/static/img/favicon-neutral.png',
       });
     });
 
@@ -84,6 +86,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         title_link: 'https://github.com/jdrydn/github-actions-slack-message/actions/runs/1234',
         text: undefined,
         footer: '*<https://github.com/jdrydn/github-actions-slack-message|jdrydn/github-actions-slack-message>* (<https://github.com/jdrydn/github-actions-slack-message/tree/hotfix/quick-fix|hotfix/quick-fix>)',
+        footer_icon: 'https://slack.github.com/static/img/favicon-neutral.png',
       });
     });
 
@@ -106,6 +109,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         author_name: 'jdrydn',
         text: undefined,
         footer: '*<https://github.com/jdrydn/github-actions-slack-message|jdrydn/github-actions-slack-message>* (<https://github.com/jdrydn/github-actions-slack-message/tree/hotfix/quick-fix|hotfix/quick-fix>)',
+        footer_icon: 'https://slack.github.com/static/img/favicon-neutral.png',
       });
     });
   });
