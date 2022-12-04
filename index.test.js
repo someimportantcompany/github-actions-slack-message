@@ -45,6 +45,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         color: '#4453A6',
         fallback: '[a/b] (develop) undefined',
         mrkdwn_in: [ 'text' ],
+        title: undefined,
         text: undefined,
         footer: '*<https://github.com/a/b|a/b>* (<https://github.com/a/b/tree/develop|develop>)',
         footer_icon: 'https://slack.github.com/static/img/favicon-neutral.png',
@@ -103,6 +104,29 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
         fallback: '[jdrydn/github-actions-slack-message] (hotfix/quick-fix) undefined',
         mrkdwn_in: [ 'text' ],
         title: 'CI/CD (#shashash)',
+        title_link: 'https://github.com/jdrydn/github-actions-slack-message/actions/runs/1234',
+        author_icon: 'https://github.com/jdrydn.png',
+        author_link: 'https://github.com/jdrydn',
+        author_name: 'jdrydn',
+        text: undefined,
+        footer: '*<https://github.com/jdrydn/github-actions-slack-message|jdrydn/github-actions-slack-message>* (<https://github.com/jdrydn/github-actions-slack-message/tree/hotfix/quick-fix|hotfix/quick-fix>)',
+        footer_icon: 'https://slack.github.com/static/img/favicon-neutral.png',
+      });
+    });
+
+    it('should create a Slack attachment with a title', () => {
+      Object.assign(process.env, {
+        ...env,
+        GITHUB_EVENT_NAME: 'pull_request',
+        GITHUB_HEAD_REF: 'refs/heads/hotfix/quick-fix',
+      });
+
+      const attachment = buildAttachmentBlock({ title: 'Hello, world!' });
+
+      assert.deepStrictEqual(attachment, {
+        fallback: '[jdrydn/github-actions-slack-message] (hotfix/quick-fix) undefined',
+        mrkdwn_in: [ 'text' ],
+        title: 'Hello, world!',
         title_link: 'https://github.com/jdrydn/github-actions-slack-message/actions/runs/1234',
         author_icon: 'https://github.com/jdrydn.png',
         author_link: 'https://github.com/jdrydn',

@@ -25,6 +25,9 @@ inputs:
   username:
     description: Set the webhook username - only valid if `webhook-url` was provided.
     required: false
+  title:
+    description: A title for the Slack message, defaults to "$WORKFLOW_NAME (#$COMMIT-HASH)"
+    required: false
   icon-emoji:
     description: Set the webhook icon_emoji - only valid if `webhook-url` was provided.
     required: false

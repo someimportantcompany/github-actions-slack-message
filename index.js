@@ -23,7 +23,7 @@ const COLORS = {
   'purple': '#9400D3',
 };
 
-function buildAttachmentBlock({ color, text, imageUrl, thumbUrl }) {
+function buildAttachmentBlock({ color, title, text, imageUrl, thumbUrl }) {
   const {
     GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID, GITHUB_WORKFLOW, GITHUB_EVENT_NAME,
     GITHUB_REF, GITHUB_SHA, GITHUB_ACTOR, GITHUB_HEAD_REF,
@@ -40,9 +40,11 @@ function buildAttachmentBlock({ color, text, imageUrl, thumbUrl }) {
     fallback: `[${GITHUB_REPOSITORY}] (${BRANCH}) ${text}`.trim(),
     mrkdwn_in: [ 'text' ],
     ...(GITHUB_WORKFLOW && GITHUB_SHA && GITHUB_RUN_ID ? {
-      title: `${GITHUB_WORKFLOW} (#${GITHUB_SHA.substr(0, 8)})`,
+      title: title || `${GITHUB_WORKFLOW} (#${GITHUB_SHA.substr(0, 8)})`,
       title_link: `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`,
-    } : {}),
+    } : {
+      title,
+    }),
     text,
     ...(GITHUB_ACTOR ? {
       author_name: GITHUB_ACTOR,
@@ -105,6 +107,7 @@ module.exports = async function slackNotify() {
     const channel = core.getInput('channel');
     const botToken = core.getInput('bot-token');
     const webhookUrl = core.getInput('webhook-url');
+    const title = core.getInput('title');
     const text = core.getInput('text');
     const color = core.getInput('color');
     const username = core.getInput('username');
@@ -122,7 +125,7 @@ module.exports = async function slackNotify() {
     assert(!botToken || channel, new Error('Expected `channel` input since `bot-token` was passed'));
     assert(!existingMessageID || botToken, new Error('Expected `bot-token` since `message-id` input was passed'));
 
-    const attachment = buildAttachmentBlock({ color, text, imageUrl, thumbUrl });
+    const attachment = buildAttachmentBlock({ color, title, text, imageUrl, thumbUrl });
 
     const args = {
       ...(channel ? { channel } : {}),
