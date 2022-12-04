@@ -4,7 +4,7 @@ branding:
   icon: message-square
   color: purple
 runs:
-  using: node12
+  using: node16
   main: ./index.dist.js
 inputs:
   text:
