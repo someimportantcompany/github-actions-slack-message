@@ -249,6 +249,7 @@ describe('@someimportantcompany/github-actions-slack-notify', () => {
 
   const buildAttachmentBlock = () => 'ATTACHMENT';
   const mockCore = ({ inputs = {}, outputs = {} } = {}) => ({
+    debug: () => null,
     getInput: key => inputs[key] || null,
     getOutput: key => outputs[key] || null,
     setOutput: (key, value) => outputs[key] = value,

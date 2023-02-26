@@ -1,11 +1,11 @@
 /**
- * @author: James D <james@someimportantcompany.com> (https://github.com/someimportantcompany)
+ * @author: jdrydn <james@someimportantcompany.com> (https://github.com/someimportantcompany)
  * @license: MIT
  * @link: https://github.com/someimportantcompany/github-actions-slack-notify
+ * @variation: 3c1b552680fe
  */
 const axios = require('axios');
 const core = require('@actions/core');
-const debug = require('debug')('slack-message');
 const util = require('util');
 
 const COLORS = {
@@ -22,6 +22,12 @@ const COLORS = {
   'orange': '#FF4500',
   'purple': '#9400D3',
 };
+
+function assert(value, err) {
+  if (Boolean(value) === false) {
+    throw err;
+  }
+}
 
 function buildAttachmentBlock({ color, title, text, imageUrl, thumbUrl }) {
   const {
@@ -81,11 +87,11 @@ async function sendToSlack({ botToken, webhookUrl }, body) {
     headers.authorization = botToken.startsWith('Bearer ') ? botToken : `Bearer ${botToken}`;
   }
 
-  debug('%s %j %j', url, headers, body);
+  core.debug('%s %j %j', url, headers, body);
 
   try {
     const { status, data } = await axios.post(url, body, { headers });
-    debug('%s %j', status, data);
+    core.debug(status, data);
     /* istanbul ignore next */
     assert(!botToken || (data && data.ok === true), new Error(`Error from Slack: ${data ? data.error : 'unknown'}`));
     assert(!webhookUrl || data === 'ok', new Error('Error from Slack: Response not OK'));
@@ -94,7 +100,7 @@ async function sendToSlack({ botToken, webhookUrl }, body) {
     /* istanbul ignore else */
     if (err.response && err.response.data && err.response.data.error) {
       const { data: { error: code, response_metadata } } = err.response;
-      debug('%j', { error: code, response_metadata });
+      core.debug({ error: code, response_metadata });
       assert(false, new Error(`Error from Slack: ${code}`));
     } else {
       throw err;
@@ -117,7 +123,7 @@ module.exports = async function slackNotify() {
     const imageUrl = core.getInput('image-url');
     const thumbUrl = core.getInput('thumb-url');
 
-    debug('%j', { botToken, webhookUrl, channel, text, color, existingMessageID });
+    core.debug({ botToken, webhookUrl, channel, text, color, existingMessageID });
 
     assert(botToken || webhookUrl, new Error('Expected `bot-token` or `webhook-url` input'));
     assert(text, new Error('Expected `text` input'));
@@ -137,10 +143,10 @@ module.exports = async function slackNotify() {
       attachments: [ attachment ],
       ...(existingMessageID ? { ts: existingMessageID } : {}),
     };
-    debug('%j', args);
+    core.debug(args);
 
     const { ts: sentMessageID } = await sendToSlack({ botToken, webhookUrl }, args);
-    debug('%j', { sentMessageID });
+    core.debug({ sentMessageID });
 
     if (botToken) {
       core.setOutput('message-id', sentMessageID);
@@ -150,15 +156,6 @@ module.exports = async function slackNotify() {
     process.env.NODE_ENV !== 'production' && assert(false, err); // eslint-disable-line no-unused-expressions
   }
 };
-
-function assert(value, err) {
-  if (Boolean(value) === false) {
-    throw err;
-  }
-}
-
-// eslint-disable-next-line no-unused-expressions
-`${process.env.VARIANCE}`;
 
 /* istanbul ignore next */
 if (!module.parent) {
