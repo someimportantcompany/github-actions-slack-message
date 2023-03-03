@@ -11,7 +11,7 @@ jobs:
       SHOW_DEBUG: true
       THROW_ERR: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: someimportantcompany/github-actions-slack-message@master
         uses: ./
