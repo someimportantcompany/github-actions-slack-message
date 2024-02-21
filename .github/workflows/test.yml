@@ -1,8 +1,12 @@
 name: Test
 on:
+  # On new pushes to the generated files
   push:
     paths:
       - index.dist.js
+  # Upon manual request
+  workflow_dispatch:
+
 jobs:
   run:
     runs-on: ubuntu-latest
